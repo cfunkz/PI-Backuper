@@ -19,7 +19,7 @@ Raspberry Pi SD card backup & restore tool for **Windows**.
 
 ## Screenshots
 
-![Main Window](images/main.png)
+<img width="819" height="476" alt="image" src="https://github.com/user-attachments/assets/4c8f506e-fc36-493a-8011-555b7442eb55" />
 
 ---
 
@@ -31,10 +31,31 @@ Raspberry Pi SD card backup & restore tool for **Windows**.
 
 ---
 
+## What It Can Back Up
+
+PI-Backuper performs **raw, full-device imaging**.  
+It reads the entire removable device **sector-by-sector**, not files.
+
+This means it can back up **any removable USB media**, including:
+
+- Raspberry Pi SD cards (Raspberry Pi OS, Ubuntu, LibreELEC, custom images)
+- Other SBC / embedded Linux SD cards
+- USB flash drives (FAT32, exFAT, NTFS, unknown filesystems)
+- External USB HDDs / SSDs (full disk, all partitions)
+- Bootable installers and recovery media
+- Encrypted or unsupported filesystems (data is copied as-is)
+
+PI-Backuper does **not** depend on the filesystem or OS on the device.  
+If Windows can see it as a **removable USB disk**, it can be backed up.
+
+⚠ Internal system drives are intentionally **not supported** for safety.
+
+---
+
 ## Usage
 
 1. Download the latest release from **Releases**
-2. Run `PI-Imager.exe` (UAC prompt required)
+2. Run `PI-Backuper.exe` (UAC prompt required)
 3. Select removable device
 4. Backup or restore
 
@@ -46,9 +67,8 @@ Raspberry Pi SD card backup & restore tool for **Windows**.
 
 ```powershell
 pip install -r requirements.txt
-python -m pywin32_postinstall
 
-pyinstaller --onefile --noconsole --uac-admin --name PI-Imager ^
+pyinstaller --onefile --noconsole --uac-admin --name PI-Backuper ^
   --icon favicon.ico ^
   --add-data "favicon.ico;." ^
   --hidden-import=win32file ^
