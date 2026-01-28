@@ -45,7 +45,9 @@ def fmt_bytes(n: float) -> str:
 
 
 def fmt_eta(sec):
-    if not sec or sec <= 0:
+    if sec is None:
+        return "ETA calculating…"
+    if sec <= 0:
         return "ETA —"
     m, s = divmod(int(sec), 60)
     h, m = divmod(m, 60)
@@ -116,21 +118,19 @@ class App(ttk.Frame):
         self.progress = tk.DoubleVar(value=0)
         self.status = tk.StringVar(value="Ready")
         self.speed = tk.StringVar(value="")
-        self.eta = tk.StringVar(value="")
+        self.eta = tk.StringVar(value="ETA —")  # FIX: not blank
 
         self._build_ui()
         self.refresh_disks()
         self.after(100, self._poll)
 
     def _build_ui(self):
-        # Menu
         menubar = tk.Menu(self.root)
         helpmenu = tk.Menu(menubar, tearoff=0)
         helpmenu.add_command(label="About", command=self._about)
         menubar.add_cascade(label="Help", menu=helpmenu)
         self.root.config(menu=menubar)
 
-        # Device
         dev = ttk.LabelFrame(self, text="Removable device (USB)")
         dev.pack(fill="x")
 
@@ -138,11 +138,9 @@ class App(ttk.Frame):
         self.disk_box.pack(side="left", fill="x", expand=True, padx=6, pady=6)
         ttk.Button(dev, text="Refresh", command=self.refresh_disks).pack(side="right", padx=6, pady=6)
 
-        # Main actions
         main = ttk.Frame(self)
         main.pack(fill="x", pady=10)
 
-        # Backup
         b = ttk.LabelFrame(main, text="Backup")
         b.pack(side="left", fill="both", expand=True, padx=(0, 5))
 
@@ -153,7 +151,6 @@ class App(ttk.Frame):
         ttk.Button(rowb, text="Choose output", command=self.pick_backup).pack(side="left")
         ttk.Button(rowb, text="Start backup", command=self.start_backup).pack(side="right")
 
-        # Restore
         r = ttk.LabelFrame(main, text="Restore")
         r.pack(side="left", fill="both", expand=True, padx=(5, 0))
 
@@ -164,7 +161,6 @@ class App(ttk.Frame):
         ttk.Button(rowr, text="Choose image", command=self.pick_restore).pack(side="left")
         ttk.Button(rowr, text="Start restore (erases)", command=self.start_restore).pack(side="right")
 
-        # Options
         opt = ttk.LabelFrame(self, text="Options")
         opt.pack(fill="x")
 
@@ -173,7 +169,6 @@ class App(ttk.Frame):
 
         ttk.Checkbutton(opt, text="Gzip compress", variable=self.compress_var).pack(side="right", padx=6)
 
-        # Progress (always visible)
         prog = ttk.LabelFrame(self, text="Progress")
         prog.pack(fill="x", pady=10)
 
@@ -200,7 +195,6 @@ class App(ttk.Frame):
             f"{__url__}",
         )
 
-    # ---------- device ----------
     def refresh_disks(self):
         try:
             self.disks = list_removable_disks()
@@ -218,7 +212,6 @@ class App(ttk.Frame):
             raise RuntimeError("No removable disk selected.")
         return self.disks[self.disk_box.current()]
 
-    # ---------- pickers ----------
     def pick_backup(self):
         ext = ".img.gz" if self.compress_var.get() else ".img"
         p = filedialog.asksaveasfilename(defaultextension=ext, filetypes=[("Image", "*.img *.img.gz"), ("All", "*.*")])
@@ -230,7 +223,6 @@ class App(ttk.Frame):
         if p:
             self.restore_path.set(p)
 
-    # ---------- run control ----------
     def _set_busy(self, busy: bool):
         self.busy = busy
         self.cancel_btn.config(state="normal" if busy else "disabled")
@@ -239,7 +231,6 @@ class App(ttk.Frame):
         self.cancel.set()
         self.status.set("Cancelling…")
 
-    # ---------- actions ----------
     def start_backup(self):
         if self.busy:
             messagebox.showwarning("Busy", "An operation is already running.")
@@ -249,6 +240,7 @@ class App(ttk.Frame):
             messagebox.showerror("Error", "No output file")
             return
 
+        self.eta.set("ETA calculating…")  # FIX: show immediately
         self.cancel.clear()
         self._set_busy(True)
         threading.Thread(target=self._backup_worker, daemon=True).start()
@@ -264,11 +256,11 @@ class App(ttk.Frame):
         if not messagebox.askyesno("WARNING", "THIS ERASES THE DEVICE. CONTINUE?"):
             return
 
+        self.eta.set("ETA calculating…")  # FIX: show immediately
         self.cancel.clear()
         self._set_busy(True)
         threading.Thread(target=self._restore_worker, daemon=True).start()
 
-    # ---------- FAST BACKUP (PIPELINED) ----------
     def _backup_worker(self):
         try:
             d = self.selected_disk()
@@ -314,7 +306,6 @@ class App(ttk.Frame):
                     if data is None:
                         break
                     if self.cancel.is_set():
-                        # drain quickly then stop
                         break
                     writer.write(data)
                     if hasher:
@@ -324,8 +315,8 @@ class App(ttk.Frame):
                     now = time.time()
                     if now - last_ui > 0.2:
                         elapsed = now - start
-                        spd = done / elapsed if elapsed else 0
-                        eta = (total - done) / spd if spd else None
+                        spd = done / elapsed if elapsed else 0.0
+                        eta = (total - done) / spd if spd > 0 else None  # FIX: only None when spd is 0
                         self.q.put(("p", done, total, spd, eta))
                         last_ui = now
 
@@ -334,7 +325,6 @@ class App(ttk.Frame):
             t1.start(); t2.start()
             t1.join(); t2.join()
 
-            # finalize/cleanup
             try:
                 writer.close()
             except Exception:
@@ -367,14 +357,12 @@ class App(ttk.Frame):
             self.q.put(("done", "Backup complete"))
 
         except Exception as e:
-            # revert backup on error
             try:
                 safe_remove(self.backup_path.get() + ".partial")
             except Exception:
                 pass
             self.q.put(("err", str(e)))
 
-    # ---------- restore ----------
     def _restore_worker(self):
         try:
             d = self.selected_disk()
@@ -399,8 +387,8 @@ class App(ttk.Frame):
                     now = time.time()
                     if now - last_ui > 0.2:
                         elapsed = now - start
-                        spd = done / elapsed if elapsed else 0
-                        eta = (total - done) / spd if spd else None
+                        spd = done / elapsed if elapsed else 0.0
+                        eta = (total - done) / spd if spd > 0 else None  # FIX
                         self.q.put(("p", done, total, spd, eta))
                         last_ui = now
 
@@ -421,7 +409,6 @@ class App(ttk.Frame):
         except Exception as e:
             self.q.put(("err", str(e)))
 
-    # ---------- UI update ----------
     def _poll(self):
         try:
             while True:
@@ -431,7 +418,7 @@ class App(ttk.Frame):
                     self.progress.set(min(done / total * 100, 100))
                     self.status.set(f"{fmt_bytes(done)} / {fmt_bytes(total)}")
                     self.speed.set(f"{fmt_bytes(spd)}/s" if spd else "")
-                    self.eta.set(fmt_eta(eta))
+                    self.eta.set(fmt_eta(eta))  # will show calculating… then real ETA
                 elif msg[0] == "done":
                     self._set_busy(False)
                     self.status.set(msg[1])
@@ -456,12 +443,10 @@ def install_exception_box():
     sys.excepthook = _hook
 
 
-# ---------- main ----------
 def main():
     root = tk.Tk()
     install_exception_box()
 
-    # Tk window icon (inside app)
     try:
         root.iconbitmap(resource_path(ICON_FILE))
     except Exception:
