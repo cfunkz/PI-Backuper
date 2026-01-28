@@ -131,16 +131,19 @@ class App(ttk.Frame):
         menubar.add_cascade(label="Help", menu=helpmenu)
         self.root.config(menu=menubar)
 
+        # Device
         dev = ttk.LabelFrame(self, text="Removable device (USB)")
-        dev.pack(fill="x")
+        dev.pack(fill="x", padx=0, pady=(0, 6))
 
         self.disk_box = ttk.Combobox(dev, textvariable=self.disk_var, state="readonly")
         self.disk_box.pack(side="left", fill="x", expand=True, padx=6, pady=6)
         ttk.Button(dev, text="Refresh", command=self.refresh_disks).pack(side="right", padx=6, pady=6)
 
+        # Main actions
         main = ttk.Frame(self)
-        main.pack(fill="x", pady=10)
+        main.pack(fill="x", pady=(0, 6))
 
+        # Backup
         b = ttk.LabelFrame(main, text="Backup")
         b.pack(side="left", fill="both", expand=True, padx=(0, 5))
 
@@ -151,6 +154,7 @@ class App(ttk.Frame):
         ttk.Button(rowb, text="Choose output", command=self.pick_backup).pack(side="left")
         ttk.Button(rowb, text="Start backup", command=self.start_backup).pack(side="right")
 
+        # Restore
         r = ttk.LabelFrame(main, text="Restore")
         r.pack(side="left", fill="both", expand=True, padx=(5, 0))
 
@@ -161,29 +165,35 @@ class App(ttk.Frame):
         ttk.Button(rowr, text="Choose image", command=self.pick_restore).pack(side="left")
         ttk.Button(rowr, text="Start restore (erases)", command=self.start_restore).pack(side="right")
 
+        # Options
         opt = ttk.LabelFrame(self, text="Options")
-        opt.pack(fill="x")
+        opt.pack(fill="x", pady=(0, 6))
 
         for txt, val in [("SHA256", "sha256"), ("MD5", "md5"), ("None", "none")]:
-            ttk.Radiobutton(opt, text=txt, variable=self.hash_var, value=val).pack(side="left", padx=6)
+            ttk.Radiobutton(opt, text=txt, variable=self.hash_var, value=val).pack(side="left", padx=6, pady=2)
 
-        ttk.Checkbutton(opt, text="Gzip compress", variable=self.compress_var).pack(side="right", padx=6)
+        ttk.Checkbutton(opt, text="Gzip compress", variable=self.compress_var).pack(side="right", padx=6, pady=2)
 
+        # Progress
         prog = ttk.LabelFrame(self, text="Progress")
-        prog.pack(fill="x", pady=10)
+        prog.pack(fill="x", pady=(0, 0))
 
-        ttk.Progressbar(prog, variable=self.progress, maximum=100).pack(fill="x", padx=6, pady=4)
+        ttk.Progressbar(prog, variable=self.progress, maximum=100).pack(fill="x", padx=6, pady=(4, 2))
 
         lines = ttk.Frame(prog)
-        lines.pack(fill="x", padx=6, pady=(0, 6))
+        lines.pack(fill="x", padx=6, pady=(0, 4))
+
         ttk.Label(lines, textvariable=self.status).pack(anchor="w")
         ttk.Label(lines, textvariable=self.speed).pack(anchor="w")
-        ttk.Label(lines, textvariable=self.eta).pack(anchor="w")
 
-        btns = ttk.Frame(prog)
-        btns.pack(fill="x", padx=6, pady=(0, 6))
-        self.cancel_btn = tk.Button(btns, text="Cancel", command=self._cancel, state="disabled")
+        # ETA left + Cancel right (SAME ROW) so it never drops off-screen
+        eta_row = ttk.Frame(lines)
+        eta_row.pack(fill="x", pady=(0, 0))
+
+        ttk.Label(eta_row, textvariable=self.eta).pack(side="left", anchor="w")
+        self.cancel_btn = ttk.Button(eta_row, text="Cancel", command=self._cancel, state="disabled")
         self.cancel_btn.pack(side="right")
+
 
     def _about(self):
         messagebox.showinfo(
