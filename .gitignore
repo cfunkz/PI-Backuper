@@ -12,7 +12,7 @@ ENV/
 build/
 dist/
 *.spec
-*.txt
+info.txt
 
 # ---- OS / editor junk ----
 .DS_Store
