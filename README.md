@@ -12,7 +12,7 @@ Removable media backup & restore tool for **Windows**.
 - SHA256 or MD5 hashing
 - Stable high-speed pipeline (reader + writer threads)
 - Progress bar with speed & ETA
-- Safe rollback on error
+- Clone to another device
 - One-click portable `.exe` (no Python required)
 
 ---
