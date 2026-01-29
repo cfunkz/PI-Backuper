@@ -86,9 +86,11 @@ pip install -r requirements.txt
 pyinstaller --onefile --noconsole --uac-admin --name PI-Backuper ^
   --icon favicon.ico ^
   --add-data "favicon.ico;." ^
+  --hidden-import=pythoncom ^
   --hidden-import=win32file ^
   --hidden-import=win32con ^
-  --hidden-import=pythoncom ^
+  --hidden-import=win32event ^
+  --hidden-import=win32api ^
   --hidden-import=wmi ^
   main.py
 ```
