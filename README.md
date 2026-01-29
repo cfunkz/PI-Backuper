@@ -1,7 +1,6 @@
 <p align="center">
   <img src="https://img.shields.io/github/stars/cfunkz/PI-Backuper?style=flat-square" alt="Stars">
   <img src="https://img.shields.io/github/issues/cfunkz/PI-Backuper?style=flat-square" alt="Open Issues">
-  <img src="https://img.shields.io/github/issues-closed/cfunkz/PI-Backuper?style=flat-square" alt="Closed Issues">
   <img src="https://img.shields.io/github/release/cfunkz/PI-Backuper?style=flat-square" alt="Latest Release">
   <img src="https://img.shields.io/github/downloads/cfunkz/PI-Backuper/total?style=flat-square" alt="Downloads">
   <img src="https://img.shields.io/github/license/cfunkz/PI-Backuper?style=flat-square" alt="License">
