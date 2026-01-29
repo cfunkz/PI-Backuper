@@ -102,3 +102,8 @@ pyinstaller --onefile --noconsole --uac-admin --name PI-Backuper ^
   --hidden-import=wmi ^
   main.py
 ```
+
+## Trademark Notice
+
+Raspberry Pi is a trademark of the Raspberry Pi Foundation.  
+PI-Backuper is an independent, community-developed project and is **not affiliated with or endorsed by** the Raspberry Pi Foundation.
