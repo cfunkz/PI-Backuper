@@ -1,10 +1,16 @@
 <p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/GUI-Tkinter-blue?style=flat-square" alt="Tkinter">
+  <img src="https://img.shields.io/badge/Built%20With-PyInstaller-3C873A?style=flat-square" alt="PyInstaller">
+  <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6?style=flat-square&logo=windows&logoColor=white" alt="Windows">
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/github/stars/cfunkz/PI-Backuper?style=flat-square" alt="Stars">
   <img src="https://img.shields.io/github/issues/cfunkz/PI-Backuper?style=flat-square" alt="Open Issues">
   <img src="https://img.shields.io/github/release/cfunkz/PI-Backuper?style=flat-square" alt="Latest Release">
   <img src="https://img.shields.io/github/downloads/cfunkz/PI-Backuper/total?style=flat-square" alt="Downloads">
   <img src="https://img.shields.io/github/license/cfunkz/PI-Backuper?style=flat-square" alt="License">
-  <img src="https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-blue?style=flat-square" alt="Platform">
 </p>
 
 # PI-Backuper
