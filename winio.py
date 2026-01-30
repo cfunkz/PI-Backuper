@@ -5,12 +5,12 @@ from __future__ import annotations
 
 import threading
 from typing import Iterable
-from .constants import (
+from constants import (
     ERROR_IO_PENDING,
     FSCTL_DISMOUNT_VOLUME,
     FSCTL_LOCK_VOLUME,
 )
-from .win_deps import win_modules
+from win_deps import win_modules
 
 
 def open_disk(path: str, write: bool = False):

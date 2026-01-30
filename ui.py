@@ -8,16 +8,16 @@ import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
-from .constants import ICON_FILE
-from .disks import DiskInfo, list_usb_disks
-from .operations import (
+from constants import ICON_FILE
+from disks import DiskInfo, list_usb_disks
+from operations import (
     BackupOptions,
     backup_disk_to_image,
     clone_disk_to_disk,
     restore_image_to_disk,
 )
-from .streaming import Progress
-from .utils import fmt_bytes, fmt_eta, resource_path
+from streaming import Progress
+from utils import fmt_bytes, fmt_eta, resource_path
 
 
 class App(ttk.Frame):

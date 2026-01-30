@@ -6,7 +6,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List
 
-from .win_deps import win_modules
+from win_deps import win_modules
 
 
 @dataclass(frozen=True)

@@ -1,9 +1,9 @@
 [project]
 name = "pi-backuper"
-version = "1.0.2"
+version = "1.0.3"
 description = "Win11 raw USB/SD backup/restore/clone tool for removable media."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 license = { file = "LICENSE" }
 
 authors = [

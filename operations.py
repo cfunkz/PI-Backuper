@@ -9,10 +9,10 @@ import threading
 from dataclasses import dataclass
 from typing import Callable, Optional
 
-from .constants import CHUNK
-from .disks import DiskInfo
-from .streaming import Progress, stream_copy
-from .utils import (
+from constants import CHUNK
+from disks import DiskInfo
+from streaming import Progress, stream_copy
+from utils import (
     atomic_replace,
     disk_rescan,
     make_hasher,
@@ -20,8 +20,8 @@ from .utils import (
     sidecar,
     write_sidecar,
 )
-from .win_deps import win_modules
-from .winio import close_handles, lock_dismount, open_disk, write_at_cancel
+from win_deps import win_modules
+from winio import close_handles, lock_dismount, open_disk, write_at_cancel
 
 
 ProgressCb = Callable[[Progress], None]

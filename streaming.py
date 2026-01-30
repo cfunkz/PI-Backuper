@@ -9,7 +9,7 @@ import time
 from dataclasses import dataclass
 from typing import Callable, Optional
 
-from .constants import QUEUE_MAX
+from constants import QUEUE_MAX
 
 
 @dataclass(frozen=True)

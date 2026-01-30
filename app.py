@@ -7,10 +7,10 @@ import sys
 import tkinter as tk
 from tkinter import messagebox
 
-from .constants import __title__, __version__
-from .ui import App, set_app_icon
-from .utils import is_admin
-from .win_deps import MissingWindowsDependency, win_modules
+from constants import __title__, __version__
+from ui import App, set_app_icon
+from utils import is_admin
+from win_deps import MissingWindowsDependency, win_modules
 
 
 def install_exception_box() -> None:
@@ -49,3 +49,6 @@ def run() -> None:
 
     App(root)
     root.mainloop()
+
+if __name__ == "__main__":
+    run()
