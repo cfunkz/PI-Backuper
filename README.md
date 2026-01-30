@@ -100,7 +100,7 @@ pyinstaller --onefile --noconsole --uac-admin --name PI-Backuper ^
   --hidden-import=win32event ^
   --hidden-import=win32api ^
   --hidden-import=wmi ^
-  main.py
+  app.py
 ```
 
 ## Trademark Notice
